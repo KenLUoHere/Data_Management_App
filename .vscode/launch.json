@@ -1,0 +1,47 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(gdb) Attach",
+            "type": "cppdbg",
+            "request": "attach",
+            "program": "enter program name, for example ${workspaceFolder}/a.out",
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/d8bad299769b5e0dd86ba9e5f0ccf2de/tonka3000.qtvsctools/qt.natvis.xml"
+        },
+        {
+            "name": "qt build and debug active file",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${workspaceRootFolderName}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "为 gdb 启用整齐打印",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "prelaunchTask": "make build activefile",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/d8bad299769b5e0dd86ba9e5f0ccf2de/tonka3000.qtvsctools/qt.natvis.xml"
+        }
+    ]
+}

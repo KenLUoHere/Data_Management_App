@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "qmake build makefile",
+            "command": "/opt/Qt/6.8.1/gcc_64/bin/qmake",
+            "args": [],
+            "options": {},
+            "problemMatcher": [],
+            "group": "build"
+        },
+        {
+            "type": "shell",
+            "label": "make build activefile",
+            "command": "/usr/bin/make",
+            "args": [],
+            "options": {},
+            "problemMatcher": [],
+            "group": "build"
+        }
+    ]
+}
