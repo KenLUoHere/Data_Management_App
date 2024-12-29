@@ -1,20 +1,30 @@
-// BackupManager.h
 #ifndef BACKUPMANAGER_H
 #define BACKUPMANAGER_H
 
 #include <QString>
+#include <QFile>
+#include <QDir>
+#include <QDebug>
+#include <QDateTime>
+#include <private/qzipwriter_p.h>
+#include <QJsonObject>
+#include <QJsonDocument>
 
 class BackupManager {
 public:
-    BackupManager();
+    BackupManager(const QString &backupBasePath = "backups");
     ~BackupManager();
 
-    void backupDirectory(const QString &sourceDir, const QString &targetDir);
-    //作为输入递归遍历目录文件树，利用private函数进行备份
-
+    bool backup(const QString &sourceDir);
+    
 private:
-    void copyFile(const QString &source, const QString &destination);
-    //对于单一文件进行拷贝
+    QString backupBasePath;
+    QString currentBackupPath;
+    
+    bool createBackupDirectory();
+    bool compressDirectory(const QString &sourceDir, const QString &zipPath);
+    bool saveMetadata(const QString &sourceDir);
+    QString generateBackupName(const QString &sourceDir);
 };
 
 #endif // BACKUPMANAGER_H

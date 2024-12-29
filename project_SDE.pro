@@ -15,10 +15,14 @@ INCLUDEPATH += .
 
 # Input
 HEADERS += mainwindow.h \
+           BackupManager.h \
+           RestoreManager.h \
            build/Desktop_Qt_6_8_1-Debug/project_SDE_autogen/include/ui_mainwindow.h
 FORMS += mainwindow.ui
 SOURCES += main.cpp \
            mainwindow.cpp \
+           BackupManager.cpp \
+           RestoreManager.cpp \
            build/Desktop_Qt_6_8_1-Debug/project_SDE_autogen/mocs_compilation.cpp \
            build/Desktop_Qt_6_8_1-Debug/CMakeFiles/3.29.3/CompilerIdCXX/CMakeCXXCompilerId.cpp
 TRANSLATIONS += project_SDE_zh_CN.ts

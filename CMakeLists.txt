@@ -19,6 +19,10 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        BackupManager.h
+        RestoreManager.h
+        BackupManager.cpp
+        RestoreManager.cpp
         ${TS_FILES}
 )
 
@@ -27,6 +31,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
+
+    
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET project_SDE APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
@@ -75,3 +81,4 @@ install(TARGETS project_SDE
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(project_SDE)
 endif()
+

@@ -5,18 +5,22 @@
 #include <QDir>
 #include <QFile>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <private/qzipreader_p.h>
+
 
 class RestoreManager {
 public:
-    RestoreManager(const QString &backupPath, const QString &restorePath);
-    bool restore(); // 执行恢复操作
+    RestoreManager(const QString &backupPath, const QString &restorePath = QString());
+    bool restore();
 
 private:
-    QString backupPath;   // 备份文件或目录的路径
+    QString backupPath;   // 备份目录的路径
     QString restorePath;  // 恢复的目标路径
-
-    bool restoreFile(const QString &sourcePath, const QString &targetPath);  // 恢复单个文件
-    bool restoreDirectory(const QString &sourcePath, const QString &targetPath); // 恢复目录
+    
+    bool extractZipFile(const QString &zipPath, const QString &targetDir);
+    bool readMetadata(QString &originalPath);
 };
 
 #endif // RESTOREMANAGER_H
