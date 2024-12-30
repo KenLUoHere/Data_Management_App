@@ -1,52 +1,51 @@
 #include "BackupManager.h"
-#include "ZipUtils.h"
 
 BackupManager::BackupManager(const QString &backupBasePath)
     : backupBasePath(backupBasePath) {}
 
+BackupManager::~BackupManager() {}
+
 bool BackupManager::backup(const QString &sourceDir) {
-    // 创建备份目录
+    // Create backup directory
     if (!createBackupDirectory()) {
-        qWarning() << "备份失败：无法创建备份目录" << backupBasePath;
+        qWarning() << "Backup failed: Cannot create backup directory" << backupBasePath;
         return false;
     }
     
-    // 生成备份名称
+    // Generate backup name
     QString backupName = generateBackupName(sourceDir);
     currentBackupPath = backupBasePath + "/" + backupName;
     
-    // 压缩源目录
-    QString zipPath = currentBackupPath + "/backup.zip";
-    if (!compressDirectory(sourceDir, zipPath)) {
-        qWarning() << "备份失败：压缩目录失败" 
-                   << "\n源目录:" << sourceDir 
-                   << "\n目标ZIP:" << zipPath;
+    // Copy source directory
+    if (!copyDirectory(sourceDir, currentBackupPath)) {
+        qWarning() << "Backup failed: Cannot copy directory" 
+                   << "\nSource:" << sourceDir 
+                   << "\nTarget:" << currentBackupPath;
         return false;
     }
     
-    // 保存元数据（用于恢复）
+    // Save metadata (for restoration)
     if (!saveMetadata(sourceDir)) {
-        qWarning() << "备份失败：无法保存元数据文件"
-                   << "\n备份路径:" << currentBackupPath
-                   << "\n源目录:" << sourceDir;
+        qWarning() << "Backup failed: Cannot save metadata file"
+                   << "\nBackup path:" << currentBackupPath
+                   << "\nSource directory:" << sourceDir;
         return false;
     }
 
-    qInfo() << "备份成功完成:"
-            << "\n源目录:" << sourceDir
-            << "\n备份路径:" << currentBackupPath;
+    qInfo() << "Backup completed successfully:"
+            << "\nSource directory:" << sourceDir
+            << "\nBackup path:" << currentBackupPath;
     return true;
 }
 
-// 创建备份目录
 bool BackupManager::createBackupDirectory() {
     QDir dir(backupBasePath);
     if (!dir.exists()) {
         if (!dir.mkpath(backupBasePath)) {
-            qWarning() << "创建备份基础目录失败:" << backupBasePath;
+            qWarning() << "Failed to create backup base directory:" << backupBasePath;
             return false;
         }
-        qInfo() << "成功创建备份基础目录:" << backupBasePath;
+        qInfo() << "Successfully created backup base directory:" << backupBasePath;
     }
     return true;
 }
@@ -56,27 +55,16 @@ QString BackupManager::generateBackupName(const QString &sourceDir) {
     QString timestamp = current.toString("yyyyMMdd_hhmmss");
     QString dirName = QDir(sourceDir).dirName();
     QString backupName = QString("%1_%2").arg(dirName, timestamp);
-    qInfo() << "生成备份名称:" << backupName;
+    qInfo() << "Generated backup name:" << backupName;
     return backupName;
-}
-
-bool BackupManager::compressDirectory(const QString &sourceDir, const QString &zipPath) {
-    qInfo() << "开始压缩目录:"
-            << "\n源目录:" << sourceDir
-            << "\n目标ZIP:" << zipPath;
-    bool success = ZipUtils::compressDirectory(sourceDir, zipPath);
-    if (!success) {
-        qWarning() << "调用ZipUtils压缩目录失败";
-    }
-    return success;
 }
 
 bool BackupManager::saveMetadata(const QString &sourceDir) {
     QString metaPath = currentBackupPath + "/metadata.json";
     QFile metaFile(metaPath);
     if (!metaFile.open(QIODevice::WriteOnly)) {
-        qWarning() << "无法创建元数据文件:" << metaPath
-                   << "\n错误:" << metaFile.errorString();
+        qWarning() << "Cannot create metadata file:" << metaPath
+                   << "\nError:" << metaFile.errorString();
         return false;
     }
     
@@ -88,13 +76,31 @@ bool BackupManager::saveMetadata(const QString &sourceDir) {
     QByteArray jsonData = doc.toJson();
     
     if (metaFile.write(jsonData) != jsonData.size()) {
-        qWarning() << "写入元数据文件失败:" << metaPath
-                   << "\n错误:" << metaFile.errorString();
+        qWarning() << "Failed to write metadata file:" << metaPath
+                   << "\nError:" << metaFile.errorString();
         metaFile.close();
         return false;
     }
     
     metaFile.close();
-    qInfo() << "成功保存元数据文件:" << metaPath;
+    qInfo() << "Successfully saved metadata file:" << metaPath;
+    return true;
+}
+
+bool BackupManager::copyDirectory(const QString &sourceDir, const QString &targetPath) {
+    QDir dir(sourceDir);
+    if (!dir.exists()) {
+        return false;
+    }
+
+    QDir().mkpath(targetPath);
+    
+    foreach(QString file, dir.entryList(QDir::Files)) {
+        QString srcFile = sourceDir + "/" + file;
+        QString destFile = targetPath + "/" + file;
+        if (!QFile::copy(srcFile, destFile)) {
+            return false;
+        }
+    }
     return true;
 }

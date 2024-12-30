@@ -80,3 +80,12 @@ CMakeLists.txt.user*
 .rcc/
 .uic/
 /build*/
+
+# 编译生成的文件
+*.o
+*.obj
+moc_*
+ui_*
+qrc_*
+Makefile
+*.pro.user

@@ -2,21 +2,21 @@
     "version": 4,
     "configurations": [
         {
-            "name": "gcc_64",
-            "intelliSenseMode": "gcc-x64",
+            "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
-                "/opt/Qt/6.8.1/gcc_64/include/**"
+                "/opt/Qt/6.8.1/gcc_64/include/**",
+                "/opt/Qt/6.8.1/gcc_64/include/QtCore",
+                "/opt/Qt/6.8.1/gcc_64/include/QtGui",
+                "/opt/Qt/6.8.1/gcc_64/include/QtWidgets",
+                "/opt/Qt/6.8.1/gcc_64/include/QtCore/6.8.1",
+                "/opt/Qt/6.8.1/gcc_64/include/QtCore/6.8.1/QtCore"
             ],
-            "browse": {
-                "path": [
-                    "${workspaceFolder}/**",
-                    "/opt/Qt/6.8.1/gcc_64/include/**"
-                ]
-            },
-            "compilerPath": "/usr/bin/gcc",
-            "cStandard": "c11",
-            "cppStandard": "c++17"
+            "defines": [],
+            "compilerPath": "/usr/bin/g++",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
         }
     ]
 }

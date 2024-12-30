@@ -6,7 +6,6 @@
 #include <QDir>
 #include <QDebug>
 #include <QDateTime>
-#include <private/qzipwriter_p.h>
 #include <QJsonObject>
 #include <QJsonDocument>
 
@@ -22,7 +21,7 @@ private:
     QString currentBackupPath;
     
     bool createBackupDirectory();
-    bool compressDirectory(const QString &sourceDir, const QString &zipPath);
+    bool copyDirectory(const QString &sourceDir, const QString &targetPath);
     bool saveMetadata(const QString &sourceDir);
     QString generateBackupName(const QString &sourceDir);
 };

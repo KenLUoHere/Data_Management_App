@@ -7,8 +7,6 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <private/qzipreader_p.h>
-
 
 class RestoreManager {
 public:
@@ -16,10 +14,10 @@ public:
     bool restore();
 
 private:
-    QString backupPath;   // 备份目录的路径
-    QString restorePath;  // 恢复的目标路径
+    QString backupPath;   // Backup directory path
+    QString restorePath;  // Restore target path
     
-    bool extractZipFile(const QString &zipPath, const QString &targetDir);
+    bool copyDirectory(const QString &sourceDir, const QString &targetDir);
     bool readMetadata(QString &originalPath);
 };
 
