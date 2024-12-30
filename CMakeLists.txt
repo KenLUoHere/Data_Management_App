@@ -23,7 +23,6 @@ set(PROJECT_SOURCES
         RestoreManager.h
         BackupManager.cpp
         RestoreManager.cpp
-        test.cpp
         ${TS_FILES}
 )
 
@@ -31,6 +30,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(project_SDE
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ui_rsc/front_pic.qrc
     )
 
     
