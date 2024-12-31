@@ -4,34 +4,38 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , backupWindow(nullptr)
+    , restoreWindow(nullptr)
 {
     ui->setupUi(this);
 
-    QPixmap pixmap(":/new/prefix1/front_pic.png");
-    ui->label->setPixmap(pixmap);
-
-    // Change the Qlabel Size
-    ui->label->setScaledContents(true);
-    
-    // 设置 QLabel 的大小策略
-    ui->label->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    
-    // 设置最小尺寸以避免图片太小
-    ui->label->setMinimumSize(100, 100);  // 可以根据需要调整这个值
+    connect(ui->backupButton, &QPushButton::clicked, this, &MainWindow::onBackupClicked);
+    connect(ui->restoreButton, &QPushButton::clicked, this, &MainWindow::onRestoreClicked);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    if (backupWindow) {
+        delete backupWindow;
+    }
+    if (restoreWindow) {
+        delete restoreWindow;
+    }
 }
 
-void MainWindow::resizeEvent(QResizeEvent* event)
+void MainWindow::onBackupClicked()
 {
-    QMainWindow::resizeEvent(event);
-    // 获取原始图片
-    QPixmap pixmap(":/new/prefix1/front_pic.png");
-    // 根据 label 的新大小缩放图片
-    ui->label->setPixmap(pixmap.scaled(ui->label->size(), 
-                                     Qt::KeepAspectRatio, 
-                                     Qt::SmoothTransformation));
+    if (!backupWindow) {
+        backupWindow = new BackupWindow(this);
+    }
+    backupWindow->show();
+}
+
+void MainWindow::onRestoreClicked()
+{
+    if (!restoreWindow) {
+        restoreWindow = new RestoreWindow(this);
+    }
+    restoreWindow->show();
 }

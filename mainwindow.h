@@ -2,12 +2,11 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QResizeEvent>
+#include "BackupWindow.h"
+#include "RestoreWindow.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
-}
+namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
 class MainWindow : public QMainWindow
@@ -18,10 +17,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-protected:
-    void resizeEvent(QResizeEvent* event) override;
+private slots:
+    void onBackupClicked();
+    void onRestoreClicked();
 
 private:
     Ui::MainWindow *ui;
+    BackupWindow *backupWindow;
+    RestoreWindow *restoreWindow;
 };
 #endif // MAINWINDOW_H

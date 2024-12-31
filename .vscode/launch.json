@@ -19,7 +19,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/d8bad299769b5e0dd86ba9e5f0ccf2de/tonka3000.qtvsctools/qt.natvis.xml"
+            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/ecefd9bfc2f7bceb6db197f2bd02e36a/tonka3000.qtvsctools/qt.natvis.xml"
         },
         {
             "name": "qt build and debug active file",
@@ -41,7 +41,7 @@
             ],
             "prelaunchTask": "make build activefile",
             "miDebuggerPath": "/usr/bin/gdb",
-            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/d8bad299769b5e0dd86ba9e5f0ccf2de/tonka3000.qtvsctools/qt.natvis.xml"
+            "visualizerFile": "/root/.vscode-server/data/User/workspaceStorage/ecefd9bfc2f7bceb6db197f2bd02e36a/tonka3000.qtvsctools/qt.natvis.xml"
         }
     ]
 }

@@ -7,9 +7,7 @@ QT += core gui widgets testlib
 # Qt private modules
 QT += core-private gui-private widgets-private
 
-# 具体的私有头文件路径
-INCLUDEPATH += /opt/Qt/6.8.1/gcc_64/include/QtCore/6.8.1/QtCore/private
-DEPENDPATH += /opt/Qt/6.8.1/gcc_64/include/QtCore/6.8.1/QtCore/private
+CONFIG += c++17 qt_private
 
 # Include paths
 INCLUDEPATH += $$[QT_INSTALL_HEADERS]
@@ -18,28 +16,22 @@ INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtGui
 INCLUDEPATH += $$[QT_INSTALL_HEADERS]/QtWidgets
 INCLUDEPATH += .
 
-CONFIG += qt_private
-
-TEMPLATE = subdirs
-SUBDIRS = app tests
-
-app.file = app.pro
-tests.file = tests.pro
-tests.depends = app
-
 # Input
 HEADERS += mainwindow.h \
            BackupManager.h \
            RestoreManager.h \
-           ZipUtils.h
+           BackupWindow.h \
+           RestoreWindow.h \
 
-FORMS += mainwindow.ui
+FORMS += mainwindow.ui \
+         backupwindow.ui \
+         restorewindow.ui
 
 SOURCES += main.cpp \
            mainwindow.cpp \
            BackupManager.cpp \
            RestoreManager.cpp \
-           ZipUtils.cpp \
-           test.cpp
+           BackupWindow.cpp \
+           RestoreWindow.cpp \
 
 TRANSLATIONS += project_SDE_zh_CN.ts
