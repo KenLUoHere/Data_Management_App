@@ -10,8 +10,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Core Gui)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Core Gui)
+
+include_directories(${Qt${QT_VERSION_MAJOR}Widgets_INCLUDE_DIRS})
+include_directories(${Qt${QT_VERSION_MAJOR}Core_INCLUDE_DIRS})
+include_directories(${Qt${QT_VERSION_MAJOR}Gui_INCLUDE_DIRS})
 
 set(PROJECT_SOURCES
         main.cpp
@@ -37,7 +41,11 @@ qt_add_executable(project_SDE
     ${PROJECT_SOURCES}
 )
 
-target_link_libraries(project_SDE PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(project_SDE PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+)
 
 set_target_properties(project_SDE PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
