@@ -4,7 +4,8 @@
 
 BackupWindow::BackupWindow(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::BackupWindow)
+    ui(new Ui::BackupWindow),
+    backupManager("/root/backup")  // 设置备份目标路径为 /root/backup
 {
     ui->setupUi(this);
 
@@ -38,8 +39,23 @@ void BackupWindow::onBackupClicked()
         return;
     }
 
+    // 确保备份目录存在
+    QDir backupDir("/root/backup");
+    if (!backupDir.exists()) {
+        if (!backupDir.mkpath(".")) {
+            QMessageBox::critical(this, tr("Error"), 
+                tr("Cannot create backup directory: /root/backup\n"
+                   "Please check permissions."));
+            return;
+        }
+    }
+
+    // 执行备份
     if (backupManager.backup(sourceDir)) {
-        QMessageBox::information(this, tr("Success"), tr("Backup completed successfully."));
+        QString backupPath = backupManager.getCurrentBackupPath();
+        QMessageBox::information(this, tr("Success"), 
+            tr("Backup completed successfully.\n"
+               "Backup location: %1").arg(backupPath));
         close();
     } else {
         QMessageBox::critical(this, tr("Error"), tr("Backup failed."));

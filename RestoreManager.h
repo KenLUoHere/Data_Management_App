@@ -4,21 +4,22 @@
 #include <QString>
 #include <QDir>
 #include <QFile>
-#include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDebug>
+#include "PackageUtils.h"
 
 class RestoreManager {
 public:
-    RestoreManager(const QString &backupPath, const QString &restorePath = QString());
+    RestoreManager(const QString &backupPath, const QString &restorePath)
+        : backupPath(backupPath), targetPath(restorePath) {}
+    
     bool restore();
 
 private:
-    QString backupPath;   // Backup directory path
-    QString restorePath;  // Restore target path
-    
-    bool copyDirectory(const QString &sourceDir, const QString &targetDir);
-    bool readMetadata(QString &originalPath);
+    bool readMetadata(QString* originalPath);
+    QString backupPath;
+    QString targetPath;
 };
 
 #endif // RESTOREMANAGER_H

@@ -32,6 +32,8 @@ set(PROJECT_SOURCES
         RestoreWindow.cpp
         RestoreWindow.h
         restorewindow.ui
+        PackageUtils.cpp
+        PackageUtils.h
 )
 
 message(STATUS "Project sources: ${PROJECT_SOURCES}")

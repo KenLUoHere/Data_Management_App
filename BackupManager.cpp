@@ -1,53 +1,93 @@
 #include "BackupManager.h"
+#include <QDirIterator>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 BackupManager::BackupManager(const QString &backupBasePath)
-    : backupBasePath(backupBasePath) {}
+    : backupBasePath(backupBasePath) {
+}
 
-BackupManager::~BackupManager() {}
+BackupManager::~BackupManager() {
+}
 
 bool BackupManager::backup(const QString &sourceDir) {
-    // Create backup directory
-    if (!createBackupDirectory()) {
-        qWarning() << "Backup failed: Cannot create backup directory" << backupBasePath;
+    // 检查源目录是否存在且可访问
+    QDir dir(sourceDir);
+    if (!dir.exists()) {
+        qWarning() << "Source directory does not exist:" << sourceDir;
         return false;
     }
     
-    // Generate backup name
+    // 检查备份基础目录是否可写
+    QFileInfo backupDirInfo(backupBasePath);
+    if (!backupDirInfo.isWritable()) {
+        qWarning() << "Backup directory is not writable:" << backupBasePath;
+        return false;
+    }
+    
+    // 检查备份基础目录权限
+    if (!QDir().mkpath(backupBasePath)) {
+        qWarning() << "Cannot create backup base directory:" << backupBasePath;
+        return false;
+    }
+    
+    // 尝试创建一个测试文件来验证写入权限
+    QString testFile = backupBasePath + "/.test_write";
+    QFile file(testFile);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "No write permission in backup directory:" << backupBasePath;
+        return false;
+    }
+    file.close();
+    file.remove();
+    
+    // 生成备份名称和创建备份目录
     QString backupName = generateBackupName(sourceDir);
     currentBackupPath = backupBasePath + "/" + backupName;
     
-    // Copy source directory
-    if (!copyDirectory(sourceDir, currentBackupPath)) {
-        qWarning() << "Backup failed: Cannot copy directory" 
-                   << "\nSource:" << sourceDir 
-                   << "\nTarget:" << currentBackupPath;
+    if (!QDir().mkpath(currentBackupPath)) {
+        qWarning() << "Cannot create backup directory:" << currentBackupPath;
         return false;
     }
     
-    // Save metadata (for restoration)
-    if (!saveMetadata(sourceDir)) {
-        qWarning() << "Backup failed: Cannot save metadata file"
-                   << "\nBackup path:" << currentBackupPath
-                   << "\nSource directory:" << sourceDir;
+    // 打包目录
+    QString packagePath = currentBackupPath + "/backup.pkg";
+    if (!packDirectory(sourceDir, packagePath)) {
+        qWarning() << "Backup failed: Cannot pack directory"
+                   << "\nSource:" << sourceDir
+                   << "\nPackage:" << packagePath;
         return false;
     }
-
+    
+    // 保存元数据
+    if (!saveMetadata(sourceDir)) {
+        qWarning() << "Backup failed: Cannot save metadata file";
+        return false;
+    }
+    
     qInfo() << "Backup completed successfully:"
             << "\nSource directory:" << sourceDir
             << "\nBackup path:" << currentBackupPath;
     return true;
 }
 
-bool BackupManager::createBackupDirectory() {
-    QDir dir(backupBasePath);
-    if (!dir.exists()) {
-        if (!dir.mkpath(backupBasePath)) {
-            qWarning() << "Failed to create backup base directory:" << backupBasePath;
-            return false;
-        }
-        qInfo() << "Successfully created backup base directory:" << backupBasePath;
+bool BackupManager::packDirectory(const QString &sourceDir, const QString &packagePath) {
+    QStringList files;
+    QDir sourceDirectory(sourceDir);
+    QString sourcePath = sourceDirectory.absolutePath();
+    
+    // 收集所有文件和目录
+    QDirIterator it(sourcePath, 
+                    QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot,
+                    QDirIterator::Subdirectories);
+    
+    while (it.hasNext()) {
+        QString path = it.next();
+        files << path;
     }
-    return true;
+    
+    // 调用时需要传递三个参数
+    return PackageUtils::packFiles(files, packagePath, sourcePath);  // 添加 sourcePath 参数
 }
 
 QString BackupManager::generateBackupName(const QString &sourceDir) {
@@ -69,7 +109,7 @@ bool BackupManager::saveMetadata(const QString &sourceDir) {
     }
     
     QJsonObject metadata;
-    metadata["sourcePath"] = sourceDir;
+    metadata["originalPath"] = sourceDir;
     metadata["timestamp"] = QDateTime::currentDateTime().toString(Qt::ISODate);
     
     QJsonDocument doc(metadata);
@@ -87,20 +127,20 @@ bool BackupManager::saveMetadata(const QString &sourceDir) {
     return true;
 }
 
-bool BackupManager::copyDirectory(const QString &sourceDir, const QString &targetPath) {
-    QDir dir(sourceDir);
-    if (!dir.exists()) {
-        return false;
-    }
+//bool BackupManager::copyDirectory(const QString &sourceDir, const QString &targetPath) {
+//    QDir dir(sourceDir);
+//    if (!dir.exists()) {
+//        return false;
+//    }
 
-    QDir().mkpath(targetPath);
+//    QDir().mkpath(targetPath);
     
-    foreach(QString file, dir.entryList(QDir::Files)) {
-        QString srcFile = sourceDir + "/" + file;
-        QString destFile = targetPath + "/" + file;
-        if (!QFile::copy(srcFile, destFile)) {
-            return false;
-        }
-    }
-    return true;
-}
+//    foreach(QString file, dir.entryList(QDir::Files)) {
+//        QString srcFile = sourceDir + "/" + file;
+//        QString destFile = targetPath + "/" + file;
+//        if (!QFile::copy(srcFile, destFile)) {
+//            return false;
+//        }
+//    }
+//    return true;
+//}

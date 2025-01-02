@@ -41,7 +41,7 @@ void RestoreWindow::onRestoreClicked()
         return;
     }
 
-    QString backupPath = "backups/" + ui->backupList->currentItem()->text();
+    QString backupPath = "/root/backup/" + ui->backupList->currentItem()->text();
     QString restorePath = ui->restorePathEdit->text();
     
     restoreManager = new RestoreManager(backupPath, restorePath);
@@ -59,8 +59,9 @@ void RestoreWindow::onRestoreClicked()
 
 void RestoreWindow::updateBackupList()
 {
-    QDir backupDir("backups");
+    QDir backupDir("/root/backup");
     if (!backupDir.exists()) {
+        qWarning() << "Backup directory does not exist:" << backupDir.absolutePath();
         return;
     }
 
